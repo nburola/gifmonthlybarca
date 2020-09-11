@@ -50,7 +50,7 @@ library(sf)
 #This is some dummy code to list files in the directory that contains all of the PNG output map files and combine them into a GIF. 
 
 #For the file path, all you need is specify the file path to the directory that contains the folders but you need to have your own in order for it to work. 
-monthly_2005 <- list.files(path='C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/barca/barca_2005', pattern = '*.png*', full.names = TRUE) %>%  
+monthly_2005 <- list.files(path='C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/gifmonthlybarca/barca_2005', pattern = '*.png*', full.names = TRUE) %>%  
   image_read() %>%  #Reads each path file 
   image_join() %>%  # Joins the image 
   image_animate(fps=1, loop = 5) %>%  #fps controls the speed of the animation, loop controls the amount of times that the GIF loops. To loop with no limit, simply delete the loop parameter. 
