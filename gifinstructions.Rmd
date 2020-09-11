@@ -1,0 +1,62 @@
+---
+title: "Transforming PNG output maps into GIF format"
+author: "Nathaniel Burola"
+date: "9/10/2020"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE, 
+                      warning = FALSE)
+```
+
+## Task instructions assigned from Karin Forney and comments in addition! 
+```{r}
+# We have output maps that are in a PNG format from 2005-2019 with 176 files in total 
+
+# Karin: It would be awesome to create new GIFs with varying sets of input PNGs to run at user-specified speeds with a feature to allow the GIF to stop at the end or run on a loop.
+
+# Nathaniel: The dummy code below allows you to create GIFS based on varying sets of input PNGs and run them at user-specified speeds. The issue is that combining all of the 176 PNG files slows down any system, so for this example I just used the 2005 input PNG data in another folder. 
+
+# Nathaniel: To specify the speed that you want the GIF to run at, you can modify the fps parameter down below to either speed up or slow down the rate at which the GIF moves (1 = slow, 5 = fast, 10 = ultrafast). 
+
+# Nathaniel: To have a GIF that stops at the end of one loop or just runs continuously is where the loop parameter comes into play. You can specify either 1 loop or 100 loops depending on your fancy. To have it loop continuously with no limit, simply delete the loop parameter.  
+
+# Nathaniel: Your output file is going to be in the main directory where your work is set up! 
+```
+
+## Installing and reading packages into the mainframe 
+```{r}
+install.packages("magrittr")
+install.packages("magick")
+install.packages("purrr")
+install.packages("dplyr")
+install.packages("caTools")
+library(magrittr)
+library(magick)
+library(purrr)
+library(dplyr)
+library(caTools)
+library(dplyr)
+library(readr)
+library(eSDM)
+library(lubridate)
+library(rnaturalearth)
+library(sf)
+```
+
+## List files in the Barca 2005 folder and making them in a GIF 
+```{r}
+#This is some dummy code to list files in the directory that contains all of the PNG output map files and combine them into a GIF. 
+
+#For the file path, all you need is specify the file path to the directory that contains the folders but you need to have your own in order for it to work. 
+monthly_2005 <- list.files(path='C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/barca/barca_2005', pattern = '*.png*', full.names = TRUE) %>%  
+  image_read() %>%  #Reads each path file 
+  image_join() %>%  # Joins the image 
+  image_animate(fps=1, loop = 5) %>%  #fps controls the speed of the animation, loop controls the amount of times that the GIF loops. To loop with no limit, simply delete the loop parameter. 
+  image_write("monthly_2005.gif") #writes the gif to the current directory
+
+#Trying to combine all of the 176 png files in the folder takes some time and may slow down the process dramatically. Using only the 2005 data and made them into a GIF as an example.
+
+#Note that it is possible to view the gif in the reader pane of RStudio through the command read.gif("filename"), I couldn't do it on my computer as it would crash the session incessantly. 
+```
