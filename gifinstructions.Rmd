@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE,
 # Nathaniel: Your output file is going to be in the main directory where your work is set up! 
 ```
 
-## Installing and reading packages into the mainframe 
+## Installing the packages 
 ```{r}
 install.packages("magrittr")
 install.packages("magick")
@@ -33,6 +33,11 @@ install.packages("purrr")
 install.packages("dplyr")
 install.packages("caTools")
 install.packages("png")
+install.packages("filesstrings")
+```
+
+## Attaching the packages 
+```{r}
 library(magrittr)
 library(magick)
 library(purrr)
@@ -47,28 +52,36 @@ library(sf)
 library(lubridate)
 library(tidyverse)
 library(png)
+library(filesstrings)
 ```
 
-## List files in the Barca 2005 folder and making them in a GIF 
+## Method 1: Putting relevant files in another folder and making them into a GIF (barca_2005)
 ```{r}
-# This is some dummy code to list files in the directory that contains all of the PNG output map files and combine them into a GIF. 
+# Method 1 allows you to list files in the working directory that contains all of the PNG output maps for a specific year such as 2005 from the barca_2005 folder and combine them into a GIF. 
 
 # For the file path, all you need is specify the file path to the directory that contains the folders but you need to have your own in order for it to work. 
-monthly_2005 <- list.files(path='C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/gifmonthlybarca/barca_2005', pattern = '*.png*', full.names = TRUE) %>%  
+monthly_2005 <- list.files(path='C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/monthlybarca/barca_2005', pattern = '*.png*', full.names = TRUE) %>%  
   image_read() %>%  #Reads each path file 
   image_join() %>%  # Joins the image 
-  image_animate(fps=1, loop = 5) %>%  #fps controls the speed of the animation, loop controls the amount of times that the GIF loops. To loop with no limit, simply delete the loop parameter. 
+  image_animate(fps=1, loop = 5) %>% #fps controls the speed of the animation, loop controls the amount of times that the GIF loops. To loop with no limit, simply delete the loop parameter. 
+  image_write("barca_monthly_2005.gif")
   
-# Trying to combine all of the 176 png files in the folder takes some time and may slow down the process dramatically. Using only the 2005 data and made them into a GIF as an example.
+# Trying to combine all of the 176 png files in the folder takes some time and may slow down the process dramatically. This is why I only used the 2005 data to provide an example of what to do. 
 
 # Note that it is possible to view the gif in the reader pane of RStudio through the command read.gif("filename"), I couldn't do it on my computer as it would crash the session incessantly. 
+
+# Final version is the barca_monthly_2005.gif which is left in the home directory. 
 ```
 
-## Extracting specific elements and then subset/filter for file names 
+## Method 2: Extracting specific elements, subset/filter for file names, copying files, and creating a GIF out of them.
 ```{r}
-file_list <- list.files("C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/gifmonthlybarca/barca_monthly")
+# Method 2 allows you to extract specific elements from the whole list of 176 PNG output maps, subset/filter them for file names by creating a data table with filename, year, day, and month, copy said files into another folder, and finally create a GIF out of them! 
+
+# Same as before, you just need to put the file path to the directory that contains all of the folders but put your own file path to make it work. 
+file_list <- list.files("C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/monthlybarca/barca_monthly")
 file_list
 
+# Here we are essentially creating a table by first organizing the names of the files into a tibble first! Then, by using the mutate function, we create a table with 4 different columns with the filename, year, month, and day for all 176 PNG output maps! 
 dataframe <- tibble(my_filenames = file_list) %>%  
   mutate(fields = strsplit(file_list, "_"), 
          date_fields = map(fields, ~ .x[(length(.x)-2): length(.x)]), 
@@ -80,10 +93,32 @@ dataframe <- tibble(my_filenames = file_list) %>%
          day = as.integer(day)) %>%  
   select(my_filenames, year:day)
 
-barca_2006 <- filter(dataframe, year == "2006") 
+# We can filter the table by either the year, month, or day parameters by using the filter() function. In this example, we are filtering the year of 2006 to only show the respective PNG output maps that belong to that year.
+barca_2006 <- filter(dataframe, year == "2006")
 
-# Need to find a way to write a GIF directly from the files that are now filtered 
-         
+# Now that we know which files that we want from the "dataframe" table, we can simply copy the names of those files, and use the file.copy() command to copy said files moving them to a folder in the working directory. In this case, this is called "destination" which is the folder where the 2006 photos go too. 
+file.copy("Avg_monthly_2006_01_01.png", "destination")
+file.copy("Avg_monthly_2006_02_01.png", "destination")
+file.copy("Avg_monthly_2006_03_01.png", "destination")
+file.copy("Avg_monthly_2006_04_01.png", "destination")
+file.copy("Avg_monthly_2006_05_01.png", "destination")
+file.copy("Avg_monthly_2006_06_01.png", "destination")
+file.copy("Avg_monthly_2006_07_01.png", "destination")
+file.copy("Avg_monthly_2006_08_01.png", "destination")
+file.copy("Avg_monthly_2006_09_01.png", "destination")
+file.copy("Avg_monthly_2006_10_01.png", "destination")
+file.copy("Avg_monthly_2006_11_01.png", "destination")
+file.copy("Avg_monthly_2006_12_01.png", "destination")
+
+# Final step in the process similar to Method 1 where we use the above code to construct a GIF out of the 2006 only PNG output maps. 
+monthly_2006 <- list.files(path='C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/monthlybarca/destination', pattern = '*.png*', full.names = TRUE) %>%  
+  image_read() %>%  #Reads each path file 
+  image_join() %>%  # Joins the image 
+  image_animate(fps=1, loop = 5) %>% #fps controls the speed of the animation, loop controls the amount of times that the GIF loops. To loop with no limit, simply delete the loop parameter. 
+  image_write("barca_2006.gif")
+
+# Supplementary step where we move the output file called barca_2006.gif to the destination folder where all the relevant 2006 data is. 
+file.move("barca_2006.gif", "destination")
 ```        
 
 

@@ -1,4 +1,11 @@
-.Rproj.user
+# History files
 .Rhistory
+# RStudio files
+.Rproj.user
+# Session Data files
 .RData
 .Ruserdata
+# PNG output maps
+barca_monthly/
+barca_2005/
+monthly_2005.gif
