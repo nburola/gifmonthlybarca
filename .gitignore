@@ -9,3 +9,7 @@
 barca_monthly/
 barca_2005/
 monthly_2005.gif
+
+#Rendered plots 
+*.png 
+*.gif 
