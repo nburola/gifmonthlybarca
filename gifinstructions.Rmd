@@ -43,20 +43,53 @@ library(eSDM)
 library(lubridate)
 library(rnaturalearth)
 library(sf)
+library(lubridate)
+library(tidyverse)
 ```
 
 ## List files in the Barca 2005 folder and making them in a GIF 
 ```{r}
-#This is some dummy code to list files in the directory that contains all of the PNG output map files and combine them into a GIF. 
+# This is some dummy code to list files in the directory that contains all of the PNG output map files and combine them into a GIF. 
 
-#For the file path, all you need is specify the file path to the directory that contains the folders but you need to have your own in order for it to work. 
+# For the file path, all you need is specify the file path to the directory that contains the folders but you need to have your own in order for it to work. 
 monthly_2005 <- list.files(path='C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/gifmonthlybarca/barca_2005', pattern = '*.png*', full.names = TRUE) %>%  
   image_read() %>%  #Reads each path file 
   image_join() %>%  # Joins the image 
   image_animate(fps=1, loop = 5) %>%  #fps controls the speed of the animation, loop controls the amount of times that the GIF loops. To loop with no limit, simply delete the loop parameter. 
-  image_write("monthly_2005.gif") #writes the gif to the current directory
+  
+# Trying to combine all of the 176 png files in the folder takes some time and may slow down the process dramatically. Using only the 2005 data and made them into a GIF as an example.
 
-#Trying to combine all of the 176 png files in the folder takes some time and may slow down the process dramatically. Using only the 2005 data and made them into a GIF as an example.
-
-#Note that it is possible to view the gif in the reader pane of RStudio through the command read.gif("filename"), I couldn't do it on my computer as it would crash the session incessantly. 
+# Note that it is possible to view the gif in the reader pane of RStudio through the command read.gif("filename"), I couldn't do it on my computer as it would crash the session incessantly. 
 ```
+
+## Extracting specific elements and then subset/filter for file names 
+```{r}
+file_list <- list.files("C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/gifmonthlybarca/barca_monthly")
+file_list
+
+dataframe <- tibble(my_filenames = file_list) %>%  
+  mutate(fields = strsplit(file_list, "_"), 
+         date_fields = map(fields, ~ .x[(length(.x)-2): length(.x)]), 
+         year = map_chr(date_fields, ~ .x[1]), 
+         month = map_chr(date_fields, ~ .x[2]), 
+         day = map_chr(date_fields, ~ .x[3]), 
+         year = as.integer(year), 
+         month = as.integer(month),
+         day = as.integer(day)) %>%  
+  select(my_filenames, year:day)
+         
+```        
+
+## Writing the method and trying it Sam Woodman's method 
+```{r}
+file.names <- list.files("C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/gifmonthlybarca/barca_monthly") 
+file.names
+
+file.names.dates <- as.Date(substr(file.names, 13, 22))
+
+
+
+
+
+```
+
