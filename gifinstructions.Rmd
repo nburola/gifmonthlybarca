@@ -32,6 +32,7 @@ install.packages("magick")
 install.packages("purrr")
 install.packages("dplyr")
 install.packages("caTools")
+install.packages("png")
 library(magrittr)
 library(magick)
 library(purrr)
@@ -45,6 +46,7 @@ library(rnaturalearth)
 library(sf)
 library(lubridate)
 library(tidyverse)
+library(png)
 ```
 
 ## List files in the Barca 2005 folder and making them in a GIF 
@@ -77,19 +79,11 @@ dataframe <- tibble(my_filenames = file_list) %>%
          month = as.integer(month),
          day = as.integer(day)) %>%  
   select(my_filenames, year:day)
+
+barca_2006 <- filter(dataframe, year == "2006") 
+
+# Need to find a way to write a GIF directly from the files that are now filtered 
          
 ```        
 
-## Writing the method and trying it Sam Woodman's method 
-```{r}
-file.names <- list.files("C:/Users/Nathaniel Burola/Documents/Jobs/NOAA and Ocean Associates/Whales-Fisheries Interaction Modeler/gifmonthlybarca/barca_monthly") 
-file.names
-
-file.names.dates <- as.Date(substr(file.names, 13, 22))
-
-
-
-
-
-```
 
